@@ -32,6 +32,31 @@ def SVM_loss_linear(X, y, W, delta = 1.0, regularization = False):
     except:
         print("Error number +39 329 720 4110\n")
         return 0     
+
+
+
+def SVM_loss(scores, y, delta = 1.0, regularization = False):
+    """
+    scores is a torch.tensor object of shape (n_categories, n_examples); every column of scores shall the score of one example.
+    y is a torch.tensor object of shape (n_examples,); it shall contain the correct categories of every example.
+    delta is a float number; it's a hyperparameter of this loss function.
+    """
+    try:
+        n_examples = scores.shape(1)   
+        errors = scores - scores[[[y],[list(range(n_examples))]]] 
+        errors += delta # adding the delta
+        errors = errors.clamp(0) # set to zero all elements smaller than zero
+        errors[[[y][list(range(n_examples))]]] = 0 # set to zero all elements which were just (scores[i][j] - scores[i][j] + delta)
+        loss = (errors.sum())/n_examples
+    
+#        if (regularization):
+#            regularization_loss = W.pow(2).sum()
+#            loss += regularization_loss
+    
+        return loss
+    except:
+        print("Error number +39 329 720 4110\n")
+        return 0     
     
     
     
