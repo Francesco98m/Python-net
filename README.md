@@ -1,2 +1,2 @@
 # Python-net
-Various implementation of neural networks architecture in python (PyTorch)
+Various implementation of neural networks architectures in python (PyTorch)
