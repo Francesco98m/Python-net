@@ -39,3 +39,42 @@ def cross_entropy (scores, y):
     loss = ((-((s.exp())/(scores.exp().sum())).log())).sum() # computing the loss
     loss = loss / (scores.shape[1]) # normalizing the loss
     return loss
+
+
+def softmax_function(scores):
+    """
+    scores is a numpy.tensor of shape (n_categories, n_examples); every column shall contain the 
+    output of the net for one example.
+    """
+
+    unnormalized_probabilities = np.exp(scores)
+    probabilities = exp_scores / np.sum(exp_scores, axis=0, keepdims=True)
+
+    return probabilities
+
+
+def cross_entropy_loss(scores, labels):
+    """
+    scores is a numpy.tensor of shape (n_categories, n_examples); every column shall contain the 
+    output of the net for one example.
+    """   
+    
+    num_examples = scores.shape[1]
+    unnormalized_probabilities = np.exp(scores)
+    probabilities = exp_scores / np.sum(exp_scores, axis=0, keepdims=True)
+
+    correct_logprobs = -np.log(probs[labels, range(num_examples)])
+    loss = np.sum(correct_logprobs)/num_examples
+
+    return loss
+   
+    
+def regularization_loss(reg_strenght = 1e-03, *W)
+    """
+    Every argument W should be a weight matrix.
+    """   
+    for A in W:
+    reg_loss += np.sum(A*A)
+    reg_loss*= reg_strenght
+
+    return reg_loss
