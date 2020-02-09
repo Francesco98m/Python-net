@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 
 def SVM_loss(scores, y, delta = 1.0):
     """
@@ -35,7 +36,7 @@ def cross_entropy (scores, y):
     y is a torch.tensor object of shape (n_examples,); it shall contain the correct categories of every example.
     The function return the cross entropy loss (already normalized)
     """
-    s = torch.gather(scores, 1, y) # we are indexing scores using the value of y
+    s = torch.gather(scores, 0, y) # we are indexing scores using the value of y
     loss = ((-((s.exp())/(scores.exp().sum())).log())).sum() # computing the loss
     loss = loss / (scores.shape[1]) # normalizing the loss
     return loss
@@ -47,7 +48,7 @@ def softmax_function(scores):
     output of the net for one example.
     """
 
-    unnormalized_probabilities = np.exp(scores)
+    exp_scores = np.exp(scores)
     probabilities = exp_scores / np.sum(exp_scores, axis=0, keepdims=True)
 
     return probabilities
@@ -60,21 +61,23 @@ def cross_entropy_loss(scores, labels):
     """   
     
     num_examples = scores.shape[1]
-    unnormalized_probabilities = np.exp(scores)
-    probabilities = exp_scores / np.sum(exp_scores, axis=0, keepdims=True)
+    unnormalized_probabilities = torch.exp(scores)
+    probs = unnormalized_probabilities / torch.sum(unnormalized_probabilities, axis=0, keepdims=True)
 
-    correct_logprobs = -np.log(probs[labels, range(num_examples)])
-    loss = np.sum(correct_logprobs)/num_examples
+    correct_logprobs = -torch.log(probs[labels, range(num_examples)])
+    loss = torch.sum(correct_logprobs)/num_examples
 
     return loss
    
-    
-def regularization_loss(reg_strenght = 1e-03, *W)
+
+def regularization_loss(*W):
     """
     Every argument W should be a weight matrix.
-    """   
+    """  
+    reg_strenght = 1e-03
+    reg_loss = 0
     for A in W:
-    reg_loss += np.sum(A*A)
-    reg_loss*= reg_strenght
-
+        reg_loss = reg_loss + (A.pow(2).sum()).item()
+        reg_loss = reg_loss * reg_strenght
+        # print(reg_loss.shape)
     return reg_loss
